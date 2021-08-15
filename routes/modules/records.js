@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const router = express.Router()
 const Record = require('../../models/record')
 const Category = require('../../models/category')
+const { dateToString } = require('../../public/javaScript/tools')
 
 router.get('/new', (req, res) => {
   res.render('new')
@@ -20,8 +21,15 @@ router.post('/new', (req, res) => {
     .catch(err => console.error(err))
 })
 
-router.get('/:id', (req, res) => {
-  res.render('edit')
+router.get('/:id/edit', (req, res) => {
+  const id = req.params.id
+  return Record.findById(id)
+    .lean()
+    .then(record => {
+      const currentDate = dateToString(record.date)
+      res.render('edit', { record, currentDate })
+    })
+    .catch(err => console.log(err))
 })
 
 router.put('/:id', (req, res) => {
