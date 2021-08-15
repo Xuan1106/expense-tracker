@@ -1,0 +1,40 @@
+<div class="container mt-5">
+  <span class="text-muted">*為必填項目</span>
+  <h2 class="text-center">請輸入你的支出</h2>
+  <form action="/records/new" method="POST">
+    <div class="input-group my-5">
+      <label for="record-name">名稱*</label>
+      <input type="text" class="form-control ml-4" placeholder="項目名稱" aria-label="Username"
+        aria-describedby="basic-addon1" id="record-name" name="name" required>
+    </div>
+
+    <div class="input-group mb-5">
+      <label for="record-category">類別*</label>
+      <select class="form-control ml-4" id="record-category" name="category" required>
+        <option value="家居物業">家居物業</option>
+        <option value="交通出行">交通出行</option>
+        <option value="休閒娛樂">休閒娛樂</option>
+        <option value="餐飲食品">餐飲食品</option>
+        <option value="其他">其他</option>
+      </select>
+    </div>
+
+    <div class="input-group mb-5">
+      <label for="record-date">日期*</label>
+      <input type="date" id="record-date" name="date" class="ml-4" required>
+    </div>
+
+    <div class="input-group mb-5">
+      <label for="record-amount mb-3">金額*</label>
+      <input type="number" class="form-control ml-4" placeholder="金額" aria-label="Username"
+        aria-describedby="basic-addon1" id="record-amount" name="amount" required>
+    </div>
+
+
+    <div class="container text-center">
+      <button class="btn btn-success active" type="submit" aria-pressed="true">新增支出</button>
+    </div>
+
+
+  </form>
+</div>

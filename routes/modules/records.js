@@ -9,7 +9,15 @@ router.get('/new', (req, res) => {
 })
 
 router.post('/new', (req, res) => {
-
+  const record = req.body
+  return Record.create({ 
+    name: record.name,
+    date: record.date,
+    category: record.category,
+    amount: record.amount 
+  })
+    .then(() => res.redirect('/'))
+    .catch(err => console.error(err))
 })
 
 router.get('/:id', (req, res) => {
