@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 const router = express.Router()
 const Record = require('../../models/record')
 const Category = require('../../models/category')
-const { dateToString, inputValidation } = require('../../public/javascript/tools')
-
+const { dateToString, inputValidation } = require('../../public/javascripts/tools')
 router.get('/new', async (req, res) => {
   let today = new Date()
   const categories = await Category.find().lean()
