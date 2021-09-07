@@ -1,53 +1,71 @@
 <div class="container">
   <div class="d-flex flex-column">
-    <!-- dropdown -->
-    <form action="/filter" method="GET">
-      <div class="input-group mb-3 container-fluid">
+    {{> message}}
+    <form action="/filter" method="GET" class="d-flex mt-3">
+      <div class="input-group filter-category mb-3 container-fluid">
         <select class="form-control ml-2" id="record-category" name="category" onchange="submit()">
           <option value="">所有分類</option>
-          <option value="home" {{#is category '家居物業' }} selected {{/is}}>家居物業</option>
-          <option value="trans" {{#is category '交通出行' }} selected {{/is}}>交通出行</option>
-          <option value="fun" {{#is category '休閒娛樂' }} selected {{/is}}>休閒娛樂</option>
-          <option value="food" {{#is category '餐飲食品' }} selected {{/is}}>餐飲食品</option>
-          <option value="others" {{#is category '其他' }} selected {{/is}}>其他</option>
+          {{#each categories}}
+          <option value="{{ this.categoryName }}" {{#is this.categoryName ../categoryFiltered }} selected {{/is}}>{{
+            this.categoryName }}</option>
+          {{/each}}
+        </select>
+      </div>
+      <!-- dropdown for month -->
+      <div class="input-group filter-month mb-3 container-fluid">
+        <select class="form-control ml-2" id="record-month" name="month" onchange="submit()">
+          <option value="">所有月份</option>
+          <option value="1" {{#is monthFiltered '1' }} selected {{/is}}>一月</option>
+          <option value="2" {{#is monthFiltered '2' }} selected {{/is}}>二月</option>
+          <option value="3" {{#is monthFiltered '3' }} selected {{/is}}>三月</option>
+          <option value="4" {{#is monthFiltered '4' }} selected {{/is}}>四月</option>
+          <option value="5" {{#is monthFiltered '5' }} selected {{/is}}>五月</option>
+          <option value="6" {{#is monthFiltered '6' }} selected {{/is}}>六月</option>
+          <option value="7" {{#is monthFiltered '7' }} selected {{/is}}>七月</option>
+          <option value="8" {{#is monthFiltered '8' }} selected {{/is}}>八月</option>
+          <option value="9" {{#is monthFiltered '9' }} selected {{/is}}>九月</option>
+          <option value="10" {{#is monthFiltered '10' }} selected {{/is}}>十月</option>
+          <option value="11" {{#is monthFiltered '11' }} selected {{/is}}>十一月</option>
+          <option value="12" {{#is monthFiltered '12' }} selected {{/is}}>十二月</option>
         </select>
       </div>
     </form>
-
-
-    <!-- display total amount -->
-    <div class="total-amount-section text-center m-5">
-      <span>總金額：</span>
-      <h1 class="total-amount ml-4 text-info" style="display: inline;">{{ totalAmount }}</h1>
+    <div class="total-amount-section m-3 d-flex justify-content-center align-items-center">
+      <span class="total-amount-title m-3">總金額：</span>
+      <span class="total-amount m-3">{{ totalAmount }}</span>
     </div>
 
     <ul class="list-group">
       {{#each records}}
       <li class="list-group-item">
-        <div class="record-part">
-          {{#is this.category '家居物業'}} <i class="fas fa-home"></i> {{/is}}
-          {{#is this.category '交通出行'}} <i class="fas fa-shuttle-van"></i> {{/is}}
-          {{#is this.category '休閒娛樂'}} <i class="fas fa-grin-beam"></i> {{/is}}
-          {{#is this.category '餐飲食品'}} <i class="fas fa-utensils"></i> {{/is}}
-          {{#is this.category '其他'}} <i class="fas fa-pen"></i> {{/is}}
-          <span>{{ this.name }} {{ this.amount }}元 </br>{{ this.date }}</span>
-        </div>
-
-        <div class="container">
-          <form action="./records/{{ this._id }}/edit" method="GET" style="display: inline;">
-            <button class="btn btn-outline-success float-right" type="submit">修改</button>
-          </form>
-          <form action="./records/{{ this._id }}?_method=DELETE" method="POST" style="display: inline;">
-            <button class="btn btn-outline-danger float-right mr-3" type="submit">刪除</button>
-          </form>
+        <div class="row">
+          <div class="col-2 mr-auto">
+            <i class="{{ this.categoryIcon }}"></i>
+            <span class="record-info-name">{{ this.name }}</span>
+          </div>
+          <div class="col-2">
+            <span class="record-info-date">{{ this.date }}</span>
+            <span>{{ this.amount }}元</span>
+          </div>
+          <div class="col-4">
+            <span><i class="fas fa-shopping-cart"></i>{{ this.merchant }}</span>
+          </div>
+          <div class="col-4">
+              <form action="./records/{{ this._id }}" method="GET" style="display: inline;">
+                <button class="btn btn-outline-success" type="submit">修改</button>
+              </form>
+              <form action="./records/{{ this._id }}?_method=delete" method="POST" style="display: inline;">
+                <button class="btn btn-outline-danger" type="submit">刪除</button>
+              </form>
+          </div>
         </div>
       </li>
       {{/each}}
     </ul>
 
-    <div class="text-center">
-      <a href="/records/new" class="btn btn-outline-warning active mt-4" role="button" aria-pressed="true">新增支出</a>
-    </div>
-
+    <div class="mx-auto">
+      <a href="/records/new" class="btn btn-outline-warning btn-lg active mt-3" role="button"
+        aria-pressed="true">新增支出</a>
+    </div>    
   </div>
 </div>

@@ -2,45 +2,60 @@ const express = require('express')
 const router = express.Router()
 const Record = require('../../models/record')
 const Category = require('../../models/category')
-const { dateToString } = require('../../public/javaScript/tools')
+const { dateToString } = require('../../public/javascript/tools')
 
+router.get('/', async (req, res) => {
+  try {
+    const userId = req.user._id
+    const categories = await Category.find().lean()
+    const categoryData = {}
+    categories.forEach(category => categoryData[category.categoryName] = category.categoryIcon)
 
-router.get('/', (req, res) => {
- return Record.find()
-    .lean()
-    .then(records => {
-      let totalAmount = 0
-      records.forEach(record => {
+    const records = await Record.find({ userId }).sort({ date: 'asc' }).lean()
+
+    let totalAmount = 0
+    records.forEach(record => {
       record.date = dateToString(record.date)
       totalAmount += record.amount
+      record.categoryIcon = categoryData[record.category]
     })
-    res.render('index', { records, totalAmount })
-    
-    })
-    .catch(err => console.error(err))
-})
-
-router.get('/filter', (req, res) => {
-  const categoryEnName = req.query.category
-  const categoryData = {
-    'home': '家居物業',
-    'transportation': '交通出行',
-    'entertainment': '休閒娛樂',
-    'food': '餐飲食品', 
-    'others': '其他'
+    return res.render('index', { records, totalAmount, categories })
+  } catch (error) {
+    console.error(error)
   }
-  const category = categoryData[categoryEnName]
-
-  if (!category) return res.redirect('/')
-  return Record.find({ category })
-    .lean()
-    .then(records => {
-      let totalAmount = 0
-      records.forEach(record => {
-        record.date = dateToString(record.date)
-        totalAmount += record.amount
-      })
-      res.render('index', { records, totalAmount, category })
-    })
 })
+
+router.get('/filter', async (req, res) => {
+  try {
+    const userId = req.user._id
+    const categoryFiltered = req.query.category
+    const monthFiltered = Number(req.query.month)
+    const categories = await Category.find().lean()
+
+    const filterQuery = { userId }
+
+    categoryFiltered ? filterQuery.category = categoryFiltered : ''
+    monthFiltered ? filterQuery.month = monthFiltered : ''
+
+    const records = await Record.aggregate([
+      { $project: { name: 1, category: 1, date: 1, amount: 1, merchant: 1, userId: 1, month: { $month: '$date' } } },
+      { $match: filterQuery }
+    ])
+
+    const categoryData = {}
+    categories.forEach(category => categoryData[category.categoryName] = category.categoryIcon)
+    
+    let totalAmount = 0
+    records.forEach(record => {
+      record.date = dateToString(record.date)
+      totalAmount += record.amount
+      record.categoryIcon = categoryData[record.category]
+    })
+
+    return res.render('index', { records, totalAmount, categoryFiltered, categories, monthFiltered })
+  } catch (error) {
+    console.error(error)
+  }
+})
+
 module.exports = router
