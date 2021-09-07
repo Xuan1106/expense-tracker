@@ -1,43 +1,52 @@
 <div class="container">
   <div class="d-flex flex-column">
     <!-- dropdown -->
-    <div class="btn-group">
-      <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-        aria-expanded="false">
-        分類
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">家居物業</a>
-        <a class="dropdown-item" href="#">交通出行</a>
-        <a class="dropdown-item" href="#">休閒娛樂</a>
-        <a class="dropdown-item" href="#">餐飲食品</a>
-        <a class="dropdown-item" href="#">其他</a>
+    <form action="/filter" method="GET">
+      <div class="input-group mb-3 container-fluid">
+        <select class="form-control ml-2" id="record-category" name="category" onchange="submit()">
+          <option value="">所有分類</option>
+          <option value="home" {{#is category '家居物業' }} selected {{/is}}>家居物業</option>
+          <option value="trans" {{#is category '交通出行' }} selected {{/is}}>交通出行</option>
+          <option value="fun" {{#is category '休閒娛樂' }} selected {{/is}}>休閒娛樂</option>
+          <option value="food" {{#is category '餐飲食品' }} selected {{/is}}>餐飲食品</option>
+          <option value="others" {{#is category '其他' }} selected {{/is}}>其他</option>
+        </select>
       </div>
-    </div>
+    </form>
+
 
     <!-- display total amount -->
     <div class="total-amount-section text-center m-5">
       <span>總金額：</span>
-      <span class="total-amount ml-4">150</span>
+      <h1 class="total-amount ml-4 text-info" style="display: inline;">{{ totalAmount }}</h1>
     </div>
 
     <ul class="list-group">
       {{#each records}}
       <li class="list-group-item">
-        <span><span>{{ this.name }} {{ this.amount }}元 </br>{{ this.date }}</span>
-        <form action="./records/{{ this._id }}/edit" method="GET" style="display: inline;">
-          <button class="btn btn-outline-success" type="submit">修改</button>
-        </form>
-        <form action="./records/{{ this._id }}?_method=DELETE" method="POST" style="display: inline;">
-          <button class="btn btn-outline-danger" type="submit">刪除</button>
-        </form>
+        <div class="record-part">
+          {{#is this.category '家居物業'}} <i class="fas fa-home"></i> {{/is}}
+          {{#is this.category '交通出行'}} <i class="fas fa-shuttle-van"></i> {{/is}}
+          {{#is this.category '休閒娛樂'}} <i class="fas fa-grin-beam"></i> {{/is}}
+          {{#is this.category '餐飲食品'}} <i class="fas fa-utensils"></i> {{/is}}
+          {{#is this.category '其他'}} <i class="fas fa-pen"></i> {{/is}}
+          <span>{{ this.name }} {{ this.amount }}元 </br>{{ this.date }}</span>
+        </div>
+
+        <div class="container">
+          <form action="./records/{{ this._id }}/edit" method="GET" style="display: inline;">
+            <button class="btn btn-outline-success float-right" type="submit">修改</button>
+          </form>
+          <form action="./records/{{ this._id }}?_method=DELETE" method="POST" style="display: inline;">
+            <button class="btn btn-outline-danger float-right mr-3" type="submit">刪除</button>
+          </form>
+        </div>
       </li>
       {{/each}}
     </ul>
-    
+
     <div class="text-center">
-      <a href="/records/new" class="btn btn-outline-warning active mt-4" role="button"
-        aria-pressed="true">新增支出</a>
+      <a href="/records/new" class="btn btn-outline-warning active mt-4" role="button" aria-pressed="true">新增支出</a>
     </div>
 
   </div>

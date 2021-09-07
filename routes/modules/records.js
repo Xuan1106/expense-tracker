@@ -32,12 +32,26 @@ router.get('/:id/edit', (req, res) => {
     .catch(err => console.log(err))
 })
 
-router.put('/:id', (req, res) => {
 
+
+router.put('/:id', (req, res) => {
+  const id = req.params.id
+  const modifiedRecord = req.body
+  return Record.findById(id)
+    .then(record => {
+      [record.name, record.category, record.date, record.amount] = [modifiedRecord.name, modifiedRecord.category, modifiedRecord.date, modifiedRecord.amount]
+      return record.save()
+    })
+    .then(() => res.redirect('/'))
+    .catch(err => console.error(err))
 })
 
 router.delete('/:id', (req, res) => {
-
+  const id = req.params.id
+  return Record.findById(id)
+    .then(record => record.remove())
+    .then(() => res.redirect('/'))
+    .catch(err => console.error(err))
 })
 
 module.exports = router
